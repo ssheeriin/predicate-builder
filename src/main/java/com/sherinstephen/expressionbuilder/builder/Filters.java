@@ -4,27 +4,35 @@ import com.sherinstephen.expressionbuilder.expression.*;
 
 public class Filters {
 
-    public static <I, V> Filter eq(I col, V val) {
-        return new UnaryFilter<>(Op.EQ, col, val);
+    public static <ID, V> Filter<ID> eq(ID id, V[] vals) {
+        UnaryFilter<ID,V> filter =  new UnaryFilter<>();
+        filter.setId(id);
+        filter.setOperator(Op.EQ);
+        filter.setValues(vals);
+        return  filter;
     }
 
-    public static <I, V> Filter between(I col, V val1, V val2) {
-        return new BinaryFilter<>(Op.BETWEEN, col, val1, val2);
+    public static <ID, V> Filter<ID> between(ID id, V[] vals) {
+        BinaryFilter<ID,V> filter =  new BinaryFilter<>();
+        filter.setId(id);
+        filter.setOperator(Op.BETWEEN);
+        filter.setValues(vals);
+        return filter;
     }
 
     @SafeVarargs
-    public static <ID, T extends Filter> Condition and(T... filters) {
+    public static <ID , V, T extends Filter<ID>> Condition<ID> and(T... filters) {
         if (filters.length < 2) {
-            throw new RuntimeException("AND needs minimum two operands");
+            throw new IllegalArgumentException("AND needs minimum two operands");
         }
         return new AndCondition<ID>().addAll(filters);
     }
 
     @SafeVarargs
-    public static <ID, T extends Filter> Condition or(T... filters) {
+    public static <ID,V, T extends Filter<ID>> Condition<ID> or(T... filters) {
 
         if (filters.length < 2) {
-            throw new RuntimeException("OR needs minimum two operands");
+            throw new IllegalArgumentException("OR needs minimum two operands");
         }
         return new OrCondition<ID>().addAll(filters);
 

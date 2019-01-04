@@ -1,32 +1,41 @@
 package com.sherinstephen.expressionbuilder.expression;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Objects;
 
-abstract class AbstractFilter<T> implements Filter {
+public abstract class AbstractFilter<ID, V> implements Filter<ID> {
 
     @JsonProperty
-    private final T id;
+    private ID id;
 
-    @JsonProperty(value = "op")
-    private final Op op;
+    @JsonProperty
+    private Op operator;
 
-    AbstractFilter() {
-        this(null, Op.EQ);
-    }
+    @JsonProperty
+    private V[] values;
 
-    AbstractFilter(T id, Op op) {
-        this.id = id;
-        this.op = op;
-    }
-
-    public T getId() {
+    public ID getId() {
         return id;
     }
 
-    public Op getOp() {
-        return op;
+    public void setId(ID id) {
+        this.id = id;
+    }
+
+    public void setOperator(Op operator) {
+        this.operator = operator;
+    }
+
+    public void setValues(V[] vals) {
+        this.values = vals;
+    }
+    public Op getOperator() {
+        return operator;
+    }
+
+    
+    public V[] getValues() {
+        return values;
     }
 
     @Override
@@ -37,19 +46,19 @@ abstract class AbstractFilter<T> implements Filter {
             return false;
         AbstractFilter that = (AbstractFilter) o;
         return id.equals(that.id) &&
-            op == that.op;
+        operator == that.operator;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, op);
+        return Objects.hash(id, operator);
     }
 
     @Override
     public String toString() {
-        return "AbstractFilter{" +
+        return "Filter{" +
             "id='" + id + '\'' +
-            ", op=" + op +
+            ", op=" + operator +
             '}';
     }
 }

@@ -8,34 +8,34 @@ import java.util.Objects;
 
 public class Expression<ID> {
     @JsonProperty
-    private final List<Filter> filters;
+    private final List<Filter<ID>> filters;
 
     @JsonProperty
-    private final Op op;
+    private final Op operator;
 
     public Expression() {
         this.filters = new ArrayList<>();
-        op = Op.AND;
+        operator = Op.AND;
     }
 
     public Expression(final Op op) {
         this.filters = new ArrayList<>();
-        this.op = op;
+        this.operator = op;
     }
 
-    public Expression add(Filter f) {
+    public <V> Expression<ID > add(Filter<ID> f) {
         filters.add(f);
         return this;
     }
 
-    public Expression addAll(Filter... f) {
-        for (Filter filter : f) {
+    public <V> Expression<ID> addAll(Filter<ID>[] f) {
+        for (Filter<ID> filter : f) {
             filters.add(filter);
         }
         return this;
     }
 
-    public Expression addAll(List<Filter> f) {
+    public <V> Expression<ID > addAll(List<Filter<ID>> f) {
         filters.addAll(f);
         return this;
     }
@@ -46,21 +46,18 @@ public class Expression<ID> {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        Expression that = (Expression) o;
+        Expression<ID> that = (Expression<ID>) o;
         return Objects.equals(filters, that.filters) &&
-            op == that.op;
+        operator == that.operator;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(filters, op);
+        return Objects.hash(filters, operator);
     }
 
     @Override
     public String toString() {
-        return "Expression{" +
-            "filters=" + filters +
-            ", op=" + op +
-            '}';
+        return "Expression{" + "filters=" + filters + ", op=" + operator + '}';
     }
 }

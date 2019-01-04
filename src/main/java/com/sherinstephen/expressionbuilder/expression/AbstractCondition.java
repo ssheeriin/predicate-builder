@@ -7,42 +7,41 @@ import java.util.List;
 import java.util.Objects;
 
 abstract class AbstractCondition<ID> implements Condition<ID> {
-    @JsonProperty(value = "op")
-    private Op op;
+    @JsonProperty
+    private Op operator;
 
-    @JsonProperty private List<Filter> filters;
+    @JsonProperty private List<Filter<ID>> filters;
 
     AbstractCondition(Op op) {
-        this.op = op;
+        this.operator = op;
         filters = new LinkedList<>();
     }
 
-    public Op getOp() {
-        return op;
+    public Op getOperator() {
+        return operator;
     }
 
-    public void setOp(Op op) {
-        this.op = op;
+    public void setOperator(Op op) {
+        this.operator = op;
     }
 
-    public List<Filter> getFilters() {
+    public List<Filter<ID>> getFilters() {
         return filters;
     }
 
-    public void setFilters(List<Filter> filters) {
+    public void setFilters(List<Filter<ID>> filters) {
         this.filters = filters;
     }
 
     @Override
-    public Condition add(Filter f) {
+    public Condition<ID> add(Filter<ID> f) {
         filters.add(f);
         return this;
     }
 
-    @SafeVarargs
     @Override
-    public final Condition addAll(Filter... f) {
-        for (Filter filter : f) {
+    public final Condition<ID> addAll(Filter<ID>[] f) {
+        for (Filter<ID> filter  : f) {
             add(filter);
         }
         return this;
@@ -55,20 +54,20 @@ abstract class AbstractCondition<ID> implements Condition<ID> {
         if (o == null || getClass() != o.getClass())
             return false;
         AbstractCondition that = (AbstractCondition) o;
-        return op == that.op &&
+        return operator == that.operator &&
             Objects.equals(filters, that.filters);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(op, filters);
+        return Objects.hash(operator, filters);
     }
 
     @Override
     public String toString() {
         return "AbstractCondition{" +
-            "op=" + op +
-            ", filters=" + filters +
+            "op=" + operator +
+            ", filter<ID,?>s=" + filters +
             '}';
     }
 
